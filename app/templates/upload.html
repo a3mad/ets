@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+</head>
+<body>
+    <h1>Upload CSV File</h1>
+
+    <p>Selected Analysis: <strong>{{ analysis_type }}</strong></p>
+
+    <p>Required Fields:</p>
+    <ul>
+        {% if analysis_type == 'segmentation' %}
+            <li>visitorid</li>
+            <li>total_views</li>
+            <li>total_addtocart</li>
+            <li>total_purchases</li>
+        {% elif analysis_type == 'recommendation' %}
+            <li>visitorid</li>
+            <li>itemid</li>
+            <li>event</li>
+            <li>user_index</li>
+            <li>item_index</li>
+            <li>event_weight</li>
+        {% endif %}
+    </ul>
+
+    <form action="{% if analysis_type == 'segmentation' %}{{ url_for('main.process_segmentation') }}{% else %}{{ url_for('main.process_recommendation') }}{% endif %}"
+          method="post" enctype="multipart/form-data">
+        <input type="hidden" name="analysis_type" value="{{ analysis_type }}">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload & Process</button>
+    </form>
+</body>
+</html>
