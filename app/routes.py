@@ -88,12 +88,13 @@ def process_recommendation():
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
 
-    required_fields = ['visitorid', 'itemid', 'event', 'user_index', 'item_index', 'event_weight']
+    required_fields = ['visitorid', 'itemid', 'event']
 
     df = pd.read_csv(filepath)
     if not all(field in df.columns for field in required_fields):
         return "Error: CSV file is missing required fields!", 400
 
+    load_recommendation_data(filepath)
     return redirect(url_for("main.recommendation_input"))
 
 @main.route('/recommendation', methods=['GET', 'POST'])
