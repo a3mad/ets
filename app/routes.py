@@ -10,17 +10,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @main.route("/")
 def home():
-    return render_template("index.html")
+    return redirect(url_for("main.upload_recommendation"))
 
-@main.route("/choose_analysis", methods=["GET", "POST"])
-def choose_analysis():
-    if request.method == "POST":
-        analysis_type = request.form["analysis_type"]
-        session["analysis_type"] = analysis_type  # Store choice in session
-        if analysis_type == "segmentation":
-            return redirect(url_for("main.upload_segmentation"))
-        return redirect(url_for("main.upload_recommendation"))
-    return render_template("choose_analysis.html")
 
 # ---------------- SEGMENTATION ----------------
 @main.route("/upload_segmentation", methods=["GET", "POST"])
@@ -34,7 +25,10 @@ def upload_segmentation():
             file.save(filepath)
             return redirect(url_for("main.process_segmentation"))
 
-    return render_template("upload.html", analysis_type="segmentation", required_fields=required_fields)
+    return render_template("upload.html", analysis_type="segmentation", required_fields=required_fields,
+     breadcrumbs=[
+        {"label": "Upload Segmentation Data"}
+    ])
 
 
 @main.route('/process_segmentation', methods=['POST'])
@@ -61,13 +55,15 @@ def segmentation_results():
         "segmentation_results.html",
         cluster_counts=cluster_counts,
         recommendations=recommendations,
-        plot_data=plot_data
-    )
+        plot_data=plot_data,
+        breadcrumbs=[
+            {"label": "Segmentation Results"}
+        ])
 
 # ---------------- RECOMMENDATION ----------------
 @main.route("/upload_recommendation", methods=["GET", "POST"])
 def upload_recommendation():
-    required_fields = ['visitorid', 'itemid', 'event', 'user_index', 'item_index', 'event_weight']
+    required_fields = ['visitorid', 'itemid', 'event']
 
     if request.method == "POST":
         file = request.files["file"]
@@ -76,7 +72,10 @@ def upload_recommendation():
             file.save(filepath)
             return redirect(url_for("main.process_recommendation"))
 
-    return render_template("upload.html", analysis_type="recommendation", required_fields=required_fields)
+    return render_template("upload.html", analysis_type="recommendation", required_fields=required_fields,
+                           breadcrumbs=[
+                               {"label": "Upload Recommendation Data"}
+                           ])
 
 
 @main.route('/process_recommendation', methods=['POST'])
@@ -104,10 +103,16 @@ def recommendation_input():
         visitorid = int(request.form.get('visitorid'))
         recommendations = recommend_items(visitorid)
         return render_template('recommendation_results.html', recommendations=recommendations)
-    return render_template('recommendation_input.html')
+    return render_template('recommendation_input.html',
+                           breadcrumbs=[
+                               {"label": "Enter Visitor ID for Recommendations"}
+                           ])
 
 @main.route('/recommendation_results', methods=['POST'])
 def recommendation_results():
     visitorid = int(request.form.get('visitorid'))
     recommendations = recommend_items(visitorid)
-    return render_template('recommendation_results.html', recommendations=recommendations)
+    return render_template('recommendation_results.html', recommendations=recommendations,
+                           breadcrumbs=[
+                               {"label": "Recommendation Results"}
+                           ])

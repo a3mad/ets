@@ -1,34 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload CSV</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Upload CSV{% endblock %}
+
+{% block content %}
     <h1>Upload CSV File</h1>
 
     <p>Selected Analysis: <strong>{{ analysis_type }}</strong></p>
 
     <p>Required Fields:</p>
-    <ul>
+    <ul class="list-group">
         {% if analysis_type == 'segmentation' %}
-            <li>visitorid</li>
-            <li>total_views</li>
-            <li>total_addtocart</li>
-            <li>total_purchases</li>
+            <li class="list-group-item">visitorid</li>
+            <li class="list-group-item">total_views</li>
+            <li class="list-group-item">total_addtocart</li>
+            <li class="list-group-item">total_purchases</li>
         {% elif analysis_type == 'recommendation' %}
-            <li>visitorid</li>
-            <li>itemid</li>
-            <li>event</li>
+            <li class="list-group-item">visitorid</li>
+            <li class="list-group-item">itemid</li>
+            <li class="list-group-item">event</li>
         {% endif %}
     </ul>
 
     <form action="{% if analysis_type == 'segmentation' %}{{ url_for('main.process_segmentation') }}{% else %}{{ url_for('main.process_recommendation') }}{% endif %}"
-          method="post" enctype="multipart/form-data">
+          method="post" enctype="multipart/form-data" class="mt-3">
         <input type="hidden" name="analysis_type" value="{{ analysis_type }}">
-        <input type="file" name="file" accept=".csv" required>
-        <button type="submit">Upload & Process</button>
+        <div class="mb-3">
+            <input type="file" class="form-control" name="file" accept=".csv" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload & Process</button>
     </form>
-</body>
-</html>
+{% endblock %}

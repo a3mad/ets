@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segmentation Results</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Segmentation Results{% endblock %}
+
+{% block content %}
     <h2>Segmentation Results</h2>
 
     <p>Number of segments:</p>
-    <ul>
+    <ul class="list-group">
         {% for cluster, count in cluster_counts.items() %}
-            <li>{{ cluster }}: {{ count }} users</li>
+            <li class="list-group-item">{{ cluster }}: {{ count }} users</li>
         {% endfor %}
     </ul>
 
     <p><b>Recommendations:</b></p>
-    <ul>
+    <ul class="list-group">
         {% for cluster, recommendation in recommendations.items() %}
-            <li>{{ cluster }}: {{ recommendation }}</li>
+            <li class="list-group-item">{{ cluster }}: {{ recommendation }}</li>
         {% endfor %}
     </ul>
 
     <p><b>Segmentation Distribution:</b></p>
-    <img src="data:image/png;base64,{{ plot_data }}" alt="Segmentation Distribution">
-</body>
-</html>
+    <img src="data:image/png;base64,{{ plot_data }}" alt="Segmentation Distribution" class="img-fluid">
+{% endblock %}
